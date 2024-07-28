@@ -173,52 +173,46 @@ window.addEventListener("load", function () {
 // Simulated server URL (replace with actual API if available)
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
-// Function to fetch quotes from server
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
-    const data = await response.json();
-    // Simulate converting server data to our quote format
-    return data.slice(0, 5).map((item) => ({
-      text: item.title,
-      category: "Server Quote",
-    }));
+    const serverQuotes = await response.json();
+    quotes = mergeQuotes(quotes, serverQuotes);
+    saveQuotes();
+    populateCategories();
+    alert("Quotes synchronized with server!");
   } catch (error) {
-    console.error("Error fetching quotes:", error);
-    return [];
+    console.error("Error fetching quotes from server:", error);
   }
 }
 
-// Function to sync quotes with server
-async function syncQuotes() {
-  const serverQuotes = await fetchQuotesFromServer();
-  const mergedQuotes = [...quotes, ...serverQuotes];
-  // Simple conflict resolution: remove duplicates based on text
-  quotes = Array.from(new Set(mergedQuotes.map((q) => q.text))).map((text) =>
-    mergedQuotes.find((q) => q.text === text)
-  );
-
-  saveQuotes();
-  populateCategoryFilter();
-  filterQuotes();
-  notifyUser("Quotes synced with server");
+function mergeQuotes(localQuotes, serverQuotes) {
+  const mergedQuotes = [...localQuotes];
+  serverQuotes.forEach((serverQuote) => {
+    if (
+      !localQuotes.some((localQuote) => localQuote.text === serverQuote.text)
+    ) {
+      mergedQuotes.push(serverQuote);
+    }
+  });
+  return mergedQuotes;
 }
 
-// Function to notify user
-function notifyUser(message) {
-  const notification = document.createElement("div");
-  notification.textContent = message;
-  notification.style.cssText = `
-        position: fixed; top: 10px; right: 10px;
-        background: #333; color: white; padding: 10px;
-        border-radius: 5px;
-    `;
-  document.body.appendChild(notification);
-  setTimeout(() => notification.remove(), 3000);
+async function postQuoteToServer(quote) {
+  try {
+    await fetch(SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quote),
+    });
+  } catch (error) {
+    console.error("Error posting quote to server:", error);
+  }
 }
 
-// Simulate periodic syncing
-setInterval(syncQuotes, 60000); // Sync every minute
+setInterval(fetchQuotesFromServer, 300000); // Sync every 5 minutes
 
 // Add sync button to UI
 document.body.innerHTML +=
