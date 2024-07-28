@@ -73,6 +73,18 @@ function loadQuotes() {
   }
 }
 
+function populateCategories() {
+  const categoryFilter = document.getElementById("categoryFilter");
+  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+  const categories = [...new Set(quotes.map((quote) => quote.category))];
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+}
+
 // Modify addQuote function to save to local storage
 function addQuote() {
   // ... (previous code)
@@ -113,16 +125,16 @@ document.body.innerHTML += `
 // ... (previous code)
 
 // Function to populate category filter
-function populateCategoryFilter() {
-  const categoryFilter = document.getElementById("categoryFilter");
-  const categories = [
-    "All Categories",
-    ...new Set(quotes.map((q) => q.category)),
-  ];
-  categoryFilter.innerHTML = categories
-    .map((cat) => `<option value="${cat}">${cat}</option>`)
-    .join("");
-}
+// function populateCategoryFilter() {
+//   const categoryFilter = document.getElementById("categoryFilter");
+//   const categories = [
+//     "All Categories",
+//     ...new Set(quotes.map((q) => q.category)),
+//   ];
+//   categoryFilter.innerHTML = categories
+//     .map((cat) => `<option value="${cat}">${cat}</option>`)
+//     .join("");
+// }
 
 // Function to filter quotes
 function filterQuotes() {
