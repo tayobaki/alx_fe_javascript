@@ -116,15 +116,15 @@ function importFromJsonFile(event) {
 }
 
 function exportToJsonFile() {
-    const dataStr = JSON.stringify(quotes, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "quotes.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 // Add these to the window.addEventListener('load', ...) function
@@ -164,7 +164,6 @@ function filterQuotes() {
   localStorage.setItem("lastCategory", category);
 }
 
-
 window.addEventListener("load", function () {
   loadQuotes();
   populateCategoryFilter();
@@ -176,7 +175,6 @@ window.addEventListener("load", function () {
   createAddQuoteForm();
 });
 
-
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 
 async function fetchQuotesFromServer() {
@@ -186,7 +184,7 @@ async function fetchQuotesFromServer() {
     quotes = mergeQuotes(quotes, serverQuotes);
     saveQuotes();
     populateCategories();
-    alert("Quotes synchronized with server!");
+    alert("Quotes synced with server!");
   } catch (error) {
     console.error("Error fetching quotes from server:", error);
   }
